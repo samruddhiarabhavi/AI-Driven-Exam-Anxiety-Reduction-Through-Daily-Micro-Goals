@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Exam Coach</title>
+
+  <style>
+    :root {
+      --primary: #2e86de;
+      --secondary: #27ae60;
+      --bg: #f4f8fb;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+    }
+
+    header {
+      background: linear-gradient(135deg, #2e86de, #27ae60);
+      color: #fff;
+      padding: 26px;
+      text-align: center;
+    }
+
+    nav {
+      background: #fff;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    nav button {
+      margin: 6px;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 20px;
+      background: var(--primary);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+    }
+
+    .confidence {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .goal {
+      background: #eef6ff;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 8px 0;
+    }
+
+    .schedule-item {
+      background: #f9fbfd;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 6px 0;
+    }
+
+    .info {
+      background: #eef6ff;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .hidden { display: none; }
+
+    .upload-box {
+      border: 2px dashed var(--primary);
+      padding: 16px;
+      border-radius: 14px;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .upload-btn {
+      margin-top: 10px;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 18px;
+      background: var(--secondary);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .history-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 4px 0;
+    }
+
+    input[type="number"], input[type="time"] {
+      margin: 4px 8px 4px 0;
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🌱 AI Exam Coach</h1>
+  <p>Upload syllabus → Smart daily plan → Calm confidence</p>
+</header>
+
+<nav>
+  <button onclick="showPage('student')">🎓 Student</button>
+  <button onclick="showPage('parent')">👪 Parent</button>
+</nav>
+
+<div class="container">
+
+  <!-- STUDENT -->
+  <div id="student" class="card">
+    <h2>📘 Student Dashboard</h2>
+    <p>Confidence <span class="confidence" id="confidence">--</span> / 100</p>
+
+    <h3>📤 Upload Syllabus</h3>
+    <div class="upload-box">
+      <input type="file" id="syllabusFile" accept=".pdf,.txt,.png,.jpg,.jpeg" /><br><br>
+      <label>Study hours today:</label>
+      <input type="number" id="studyHours" value="6" min="1" max="12" />
+      <label>Wake time:</label>
+      <input type="time" id="wakeTime" value="06:30" />
+      <label>Sleep time:</label>
+      <input type="time" id="sleepTime" value="22:30" />
+      <br><br>
+      <button class="upload-btn" onclick="uploadSyllabus()">Analyze & Build Plan</button>
+    </div>
+    <div id="uploadStatus" class="info hidden"></div>
+
+    <h3>🎯 Today’s Micro Goals</h3>
+    <div id="goals"></div>
+
+    <h3>⏰ Today’s Timetable</h3>
+    <div id="schedule"></div>
+
+    <h3>📅 Past Study History</h3>
+    <button class="history-btn" onclick="loadHistory()">Load History</button>
+    <div id="history" class="info"></div>
+
+    <h3>💬 Coach Message</h3>
+    <div class="info" id="message"></div>
+  </div>
+
+  <!-- PARENT -->
+  <div id="parent" class="card hidden">
+    <h2>👪 Parent Guidance Panel</h2>
+    <p>Child Confidence <span class="confidence" id="parentConfidence">--</span> / 100</p>
+
+    <h3>🕒 Recommended Routine</h3>
+    <div id="parentSchedule"></div>
+
+    <h3>📌 How You Can Help Today</h3>
+    <div class="info" id="parentTip"></div>
+  </div>
+
+</div>
+
+<script>
+  const BACKEND = "http://127.0.0.1:5000";
+
+  function showPage(page) {
+    ["student", "parent"].forEach(id =>
+      document.getElementById(id).classList.add("hidden")
+    );
+    document.getElementById(page).classList.remove("hidden");
+  }
+
+  function render(data) {
+    document.getElementById("confidence").innerText = data.confidence;
+    document.getElementById("parentConfidence").innerText = data.confidence;
+
+    document.getElementById("goals").innerHTML = data.goals.map(g =>
+      `<div class="goal">📘 ${g.title} (${g.time} min)</div>`
+    ).join("");
+
+    const scheduleHTML = data.timetable.map(t =>
+      `<div class="schedule-item">⏰ ${t.start} - ${t.end} | ${t.title}</div>`
+    ).join("");
+
+    document.getElementById("schedule").innerHTML = scheduleHTML;
+    document.getElementById("parentSchedule").innerHTML = scheduleHTML;
+
+    document.getElementById("message").innerText = data.encouragement;
+    document.getElementById("parentTip").innerText =
+      data.confidence < 60
+        ? "Your child may be stressed. Focus on rest and reassurance."
+        : "Your child is doing well. Encourage consistency.";
+  }
+
+  function loadDashboard() {
+    fetch(`${BACKEND}/student/api/dashboard-data`, {
+      credentials: "include"
+    })
+      .then(r => r.json())
+      .then(render);
+  }
+
+  function uploadSyllabus() {
+    const file = document.getElementById("syllabusFile").files[0];
+    if (!file) { alert("Select a file"); return; }
+
+    const hours = document.getElementById("studyHours").value || 6;
+    const wake = document.getElementById("wakeTime").value || "06:30";
+    const sleep = document.getElementById("sleepTime").value || "22:30";
+
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("available_hours", hours);
+    fd.append("wake_time", wake);
+    fd.append("sleep_time", sleep);
+
+    const status = document.getElementById("uploadStatus");
+    status.classList.remove("hidden");
+    status.innerText = "Analyzing syllabus...";
+
+    fetch(`${BACKEND}/student/api/upload-syllabus`, {
+      method: "POST",
+      body: fd,
+      credentials: "include"
+    })
+      .then(r => r.json())
+      .then(d => {
+        if(d.error){
+          status.innerText = "❌ " + d.error;
+          return;
+        }
+        status.innerText = `✅ ${d.message} | Goals created: ${d.goals_created}`;
+        loadDashboard();
+      })
+      .catch(err => {
+        console.error(err);
+        status.innerText = "❌ Upload failed";
+      });
+  }
+
+  function loadHistory() {
+    fetch(`${BACKEND}/student/api/history-data`, {
+      credentials: "include"
+    })
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("history").innerHTML =
+          data.length === 0
+            ? "No history available."
+            : data.map(h =>
+              `<div class="schedule-item">📅 ${h.date} | ${h.topic} | Accuracy ${h.accuracy}%</div>`
+            ).join("");
+      });
+  }
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
