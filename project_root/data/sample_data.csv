@@ -1,0 +1,19 @@
+student_id,student_name,email,subject,chapter,topic,session_date,time_spent_minutes,questions_attempted,correct_answers,mistakes,confidence_snapshot
+1,Arjun Kumar,arjun@gmail.com,Mathematics,Algebra,Quadratic Equations,2025-09-01,40,20,14,6,62
+1,Arjun Kumar,arjun@gmail.com,Mathematics,Algebra,Quadratic Equations,2025-09-03,35,15,12,3,66
+1,Arjun Kumar,arjun@gmail.com,Physics,Kinematics,Motion in 1D,2025-09-04,30,10,6,4,60
+1,Arjun Kumar,arjun@gmail.com,Physics,Kinematics,Motion in 1D,2025-09-06,45,20,16,4,68
+1,Arjun Kumar,arjun@gmail.com,Chemistry,Physical,Mole Concept,2025-09-07,25,10,7,3,70
+2,Priya Sharma,priya@gmail.com,Mathematics,Calculus,Limits,2025-09-01,30,12,8,4,65
+2,Priya Sharma,priya@gmail.com,Mathematics,Calculus,Limits,2025-09-03,40,18,14,4,70
+2,Priya Sharma,priya@gmail.com,Physics,Thermodynamics,Laws of Thermodynamics,2025-09-05,35,15,9,6,64
+2,Priya Sharma,priya@gmail.com,Physics,Thermodynamics,Laws of Thermodynamics,2025-09-07,45,20,15,5,72
+3,Rahul Verma,rahul@gmail.com,Mathematics,Trigonometry,Identities,2025-09-02,20,8,4,4,55
+3,Rahul Verma,rahul@gmail.com,Mathematics,Trigonometry,Identities,2025-09-04,25,10,6,4,58
+3,Rahul Verma,rahul@gmail.com,Physics,Optics,Ray Optics,2025-09-06,30,12,8,4,60
+4,Ananya Rao,ananya@gmail.com,Chemistry,Organic,Hydrocarbons,2025-09-01,45,20,16,4,72
+4,Ananya Rao,ananya@gmail.com,Chemistry,Organic,Hydrocarbons,2025-09-04,40,18,15,3,76
+4,Ananya Rao,ananya@gmail.com,Physics,Electrostatics,Electric Charges,2025-09-06,35,15,12,3,78
+5,Vivek Patil,vivek@gmail.com,Mathematics,Statistics,Mean & Median,2025-09-02,25,10,6,4,60
+5,Vivek Patil,vivek@gmail.com,Mathematics,Statistics,Mean & Median,2025-09-05,30,12,9,3,65
+5,Vivek Patil,vivek@gmail.com,Physics,Waves,Sound Waves,2025-09-07,20,8,5,3,63
