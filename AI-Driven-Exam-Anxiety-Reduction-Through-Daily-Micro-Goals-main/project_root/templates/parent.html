@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parent View | AI Exam Coach</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f4f8;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #333;
+}
+
+.support {
+    background: #eaf7ea;
+    border-left: 4px solid #28a745;
+    padding: 10px;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>👨‍👩‍👧 Parent Dashboard</h2>
+
+<div class="card">
+    <h3 id="childName"></h3>
+    <p>Consistency Streak: <strong id="streak"></strong> days</p>
+</div>
+
+<div class="card">
+    <h3>Confidence Trend</h3>
+    <canvas id="parentConfidence"></canvas>
+</div>
+
+<div class="card">
+    <h3>How You Can Support Today</h3>
+    <div id="supportTips"></div>
+</div>
+
+<script>
+async function loadParentData() {
+    const res = await fetch('/api/parent-data');
+    const data = await res.json();
+
+    document.getElementById('childName').innerText = data.child_name;
+    document.getElementById('streak').innerText = data.streak;
+
+    new Chart(document.getElementById('parentConfidence'), {
+        type: 'line',
+        data: {
+            labels: data.dates,
+            datasets: [{
+                label: 'Confidence',
+                data: data.confidence,
+                borderColor: '#4facfe'
+            }]
+        }
+    });
+
+    const tipsDiv = document.getElementById('supportTips');
+    data.support_tips.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'support';
+        div.innerText = t;
+        tipsDiv.appendChild(div);
+    });
+}
+
+loadParentData();
+</script>
+
+</body>
+</html>
